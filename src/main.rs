@@ -6,7 +6,8 @@ use std::str::FromStr;
 
 fn main() {
     // assert_eq!(day_0(), 0);
-    assert_eq!(day_1(), 1602);
+    assert_eq!(day_1a(), 1602);
+    assert_eq!(day_1b(), 1633);
 }
 
 fn numbers_to_vec<T>(filename: &str) -> Vec<T>
@@ -37,9 +38,8 @@ fn day_0() -> i32 {
     0
 }
 
-fn day_1() -> i32 {
-    let nums: Vec<_> = lines_to_vec("data/day_1.txt")
-        .iter().map(|s| s.parse::<i32>().unwrap()).collect();
+fn day_1a() -> i32 {
+    let nums: Vec<i32> = numbers_to_vec("data/day_1.txt");
 
     let mut count = 0;
     for i in 1..nums.len() {
@@ -49,29 +49,19 @@ fn day_1() -> i32 {
     count
 }
 
+fn day_1b() -> i32 {
+    let nums: Vec<i32> = numbers_to_vec("data/day_1.txt");
 
+    let mut prev: i32 = nums.iter().take(3).sum();
+    let mut count = 0;
+    for i in 1..nums.len() - 2 {
+        let cur = prev - nums[i - 1] + nums[i + 2];
+        if cur > prev { count += 1; }
+        prev = cur;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    count
+}
 
 
 
