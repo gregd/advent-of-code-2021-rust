@@ -39,8 +39,7 @@ fn day_0() -> i32 {
 }
 
 fn day_1a() -> i32 {
-    let nums: Vec<_> = lines_to_vec("data/day_1.txt")
-        .iter().map(|s| s.parse::<i32>().unwrap()).collect();
+    let nums: Vec<i32> = numbers_to_vec("data/day_1.txt");
 
     let mut count = 0;
     for i in 1..nums.len() {
@@ -51,8 +50,7 @@ fn day_1a() -> i32 {
 }
 
 fn day_1b() -> i32 {
-    let nums: Vec<_> = lines_to_vec("data/day_1.txt")
-        .iter().map(|s| s.parse::<i32>().unwrap()).collect();
+    let nums: Vec<i32> = numbers_to_vec("data/day_1.txt");
 
     let mut prev: i32 = nums.iter().take(3).sum();
     let mut count = 0;
