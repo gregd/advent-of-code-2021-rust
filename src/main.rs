@@ -9,6 +9,7 @@ fn main() {
     assert_eq!(day_1a(), 1602);
     assert_eq!(day_1b(), 1633);
     assert_eq!(day_2a(), 1499229);
+    assert_eq!(day_2b(), 1340836560);
 }
 
 fn numbers_to_vec<T>(filename: &str) -> Vec<T>
@@ -83,6 +84,24 @@ fn day_2a() -> i32 {
     result.0 * result.1
 }
 
+fn day_2b() -> i32 {
+    let lines = lines_to_vec("data/day_2a.txt");
+    let commands: Vec<(&str, i32)> = lines.iter()
+        .map(|line| line.split_once(" ")).flatten()
+        .map(|p| (p.0, p.1.parse::<i32>().unwrap())).collect();
+
+    let result = commands.iter()
+        .fold((0, 0, 0), |(pos, depth, aim), (dir, val)|
+            match *dir {
+                "forward" => (pos + val, depth + (aim * val), aim),
+                "down" => (pos, depth, aim + val),
+                "up" => (pos, depth, aim - val),
+                _ => panic!("unknown dir"),
+            },
+        );
+
+    result.0 * result.1
+}
 
 
 
