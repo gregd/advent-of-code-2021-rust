@@ -136,11 +136,10 @@ fn day_3a() -> u32 {
 fn day_3b() -> u32 {
     let lines = lines_to_vec("data/day_3a.txt");
 
-    fn find_elem(char1: char, char2: char, pos: usize, lines: Vec<&str>) -> &str {
-        if lines.len() == 0 { panic!("no lines left"); }
+    fn find_elem<'a, 'b>(char1: char, char2: char, pos: usize, lines: &'a Vec<&'b str>) -> &'b str {
         if lines.len() == 1 { return lines[0]; }
         let mut counts: Vec<u32> = vec![0; lines[0].len()];
-        for line in &lines {
+        for line in lines {
             for (i, c) in line.chars().enumerate() {
                 if c == '1' {
                     counts[i] += 1;
@@ -155,7 +154,7 @@ fn day_3b() -> u32 {
             Ordering::Less => char2,
         };
         let new_lines = lines.iter().filter(|line| line.chars().nth(pos).unwrap() == keep).map(|i| *i).collect();
-        find_elem(char1, char2, pos + 1, new_lines)
+        find_elem(char1, char2, pos + 1, &new_lines)
     }
 
     fn convert_bits(s: &str) -> u32 {
@@ -163,12 +162,8 @@ fn day_3b() -> u32 {
     }
 
     let pom = lines.iter().map(|line| line.as_str()).collect();
-    let oxygen = find_elem('1', '0', 0, pom);
-    let oxygen = convert_bits(oxygen);
-
-    let pom = lines.iter().map(|line| line.as_str()).collect();
-    let co2 = find_elem('0', '1', 0, pom);
-    let co2 = convert_bits(co2);
+    let oxygen = convert_bits(find_elem('1', '0', 0, &pom));
+    let co2 = convert_bits(find_elem('0', '1', 0, &pom));
 
     oxygen * co2
 }
