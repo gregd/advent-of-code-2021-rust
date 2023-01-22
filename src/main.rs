@@ -6,10 +6,11 @@ use std::str::FromStr;
 
 fn main() {
     // assert_eq!(day_0(), 0);
-    assert_eq!(day_1a(), 1602);
-    assert_eq!(day_1b(), 1633);
-    assert_eq!(day_2a(), 1499229);
-    assert_eq!(day_2b(), 1340836560);
+    // assert_eq!(day_1a(), 1602);
+    // assert_eq!(day_1b(), 1633);
+    // assert_eq!(day_2a(), 1499229);
+    // assert_eq!(day_2b(), 1340836560);
+    assert_eq!(day_3a(), 3895776);
 }
 
 fn numbers_to_vec<T>(filename: &str) -> Vec<T>
@@ -103,7 +104,32 @@ fn day_2b() -> i32 {
     result.0 * result.1
 }
 
+fn day_3a() -> u32 {
+    let lines = lines_to_vec("data/day_3a.txt");
+    let rows = lines.len();
+    let cols = lines[0].len();
+    let mut counts: Vec<u32> = vec![0; cols];
+    for line in &lines {
+        for (i, c) in line.chars().enumerate() {
+            if c == '1' {
+                counts[i] += 1;
+            }
+        }
+    }
+    let half = (rows as u32) / 2;
+    let gamma: u32 = counts.iter()
+        .fold(0, |g, count| {
+            if *count > half {
+                (g << 1) + 1
+            } else {
+                g << 1
+            }
+        });
+    let mask: u32 = (0..cols).fold(0, |m, _| (m << 1) + 1);
+    let epsilon = (!gamma) & mask;
 
+    gamma * epsilon
+}
 
 
 
