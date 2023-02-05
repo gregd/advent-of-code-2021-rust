@@ -14,7 +14,8 @@ fn main() {
     // assert_eq!(day_2b(), 1340836560);
     // assert_eq!(day_3a(), 3895776);
     // assert_eq!(day_3b(), 7928162);
-    assert_eq!(day_4a(), 87456);
+    // assert_eq!(day_4a(), 87456);
+    assert_eq!(day_4b(), 15561);
 }
 
 fn numbers_to_vec<T>(filename: &str) -> Vec<T>
@@ -210,6 +211,59 @@ fn day_4a() -> i32 {
                     (0..nums).map(|r| board[r][point.col]).filter(|&n| n >= 0).count() == 0
                 {
                     return cur * board.iter().flatten().filter(|&&n| n > 0).sum::<i32>();
+                }
+            }
+        }
+    }
+
+    0
+}
+
+fn day_4b() -> i32 {
+    let lines = lines_to_vec("data/day_4a.txt");
+    let nums = 5;
+    let draw_numbers: Vec<_> = lines[0].trim().split(',').map(|s| s.parse::<i32>()).flatten().collect();
+
+    let mut boards = vec![];
+    for chunk in lines.iter().skip(2).collect::<Vec<_>>().chunks(nums + 1) {
+        let board: Vec<_> = chunk.iter()
+            .filter(|s| s.len() > 0)
+            .map(|s| s.split_ascii_whitespace().map(|n| n.parse::<i32>()).flatten().collect::<Vec<_>>())
+            .collect();
+        boards.push(board);
+    }
+
+    struct Point {
+        board: usize,
+        row: usize,
+        col: usize,
+    }
+
+    let mut points: HashMap<i32, Vec<Point>> = HashMap::new();
+    for (bnr, board) in boards.iter().enumerate() {
+        for (rnr, row) in board.iter().enumerate() {
+            for (cnr, &val) in row.iter().enumerate() {
+                let pvec = points.entry(val).or_insert(vec![]);
+                pvec.push(Point { board: bnr, row: rnr, col: cnr });
+            }
+        }
+    }
+
+    let mut left = (0..boards.len()).collect::<Vec<usize>>();
+
+    for cur in draw_numbers {
+        if let Some(pvec) = points.get(&cur) {
+            for point in pvec {
+                let board = &mut boards[point.board];
+                let row = &mut board[point.row];
+                row[point.col] = -1;
+                if row.iter().filter(|&&n| n >= 0).count() == 0 ||
+                    (0..nums).map(|r| board[r][point.col]).filter(|&n| n >= 0).count() == 0
+                {
+                    left.retain(|&v| v != point.board);
+                    if left.len() == 0 {
+                        return cur * board.iter().flatten().filter(|&&n| n > 0).sum::<i32>();
+                    }
                 }
             }
         }
